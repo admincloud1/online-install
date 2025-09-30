@@ -1,7 +1,39 @@
-DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)
+version: '3.7'
 
-sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" \
-  -o /usr/local/bin/docker-compose
+services:
+  db:
+    image: linuxserver/mariadb:latest
+    container_name: mariadb
+    restart: always
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/dump:/disk
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: mariadb
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: nextcloud
+    ports:
+      - "33306:3306"
 
-# 실행 권한 부여
-sudo chmod +x /usr/local/bin/docker-compose
+  web:
+    image: linuxserver/nextcloud:latest
+    container_name: nextcloud
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./config:/config
+      - ./data:/data
+    environment:
+      TZ: Asia/Seoul
+      PUID: 1000
+      PGID: 1000
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: nextcloud
+      MYSQL_HOST: db
+    ports:
+      - 30443:443
