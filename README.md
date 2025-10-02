@@ -1,5 +1,5 @@
-sudo teleport start \
+teleport start \
   --roles=node \
-  --token=58e960313b2a88ee3766aeddfcd0313b \
-  --ca-pin=sha256:436bb9c972b336f6dfcb6402bad023ef64a4ddfa3aef6e1c7dc452615e0a5b5b \
-  --auth-server=192.168.0.15:3025
+  --token=fad2965e7b9dca488f94cd3410501d3c \
+  --ca-pin=sha256:436bb9c972b336f6dfcb6482bad023ef64a4ddfe3aef6e1c7dc452615e8a5b5b \
+  --auth-server=teleport.cloudhong.xyz:3025   # <-- FQDN으로 변경
